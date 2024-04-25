@@ -15,11 +15,19 @@ class LecturerController extends Controller
      */
     public function index()
     {
-        $lecturer = Lecturer::with('media')->get();
+        $datas = [];
+        $lecturers = Lecturer::all();
+        foreach ($lecturers as $lecturer) {
+            $image = $lecturer->getMedia()->first()->getUrl();
+            $data = [
+                'data'=>$lecturer,
+                'image'=>$image
+            ];
+            $datas []= $data;
+        }
         return response()->json([
-            'status' => true,
             'message' => 'successfully',
-            'data' => $lecturer,
+            'data' => $datas,
         ]);
     }
 

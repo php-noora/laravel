@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parts', function (Blueprint $table) {
+        Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string( 'Number_session');
-            $table->foreignId('course_id');
-
-            $table->foreign('course_id')
-                ->references('id')
-                ->on('courses')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->string('title')->nullable();
+            $table->string('image')->nullable();
+            $table->text('Short_description')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('Visit')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parts');
+        Schema::dropIfExists('articles');
     }
 };

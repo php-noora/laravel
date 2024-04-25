@@ -10,7 +10,7 @@ class Part extends Model
     use HasFactory;
     Protected $fillable =[
         'name',
-        'Number_videos',
+        'Number_session',
         'course_id',
 
     ];
@@ -20,5 +20,10 @@ class Part extends Model
     public function course()
     {
         return $this->belongsTo(Course ::class);
+    }
+
+    public function sessions()
+    {
+        return $this->hasMany(Session ::class);
     }
 }

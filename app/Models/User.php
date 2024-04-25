@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\tickets\Ticket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -48,4 +49,19 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->belongsToMany(Course::class);
     }
+
+    public function courseFavorites()
+    {
+        return $this->belongsToMany(Course::class,'favorites',);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+//    public function myCourses ()
+//    {
+//        return $this->belongsToMany(Course::class,'my_courses',);
+//    }
 }

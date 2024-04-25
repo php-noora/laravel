@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePartRequest extends FormRequest
+class TicketsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class StorePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'Number_session' => 'required',
-            'course_id' => 'required',
+            'description' => 'required|min:2|max:1000|regex:/^[ا-یa-zA-Z0-9\-۰-۹ء-ي., ]+$/u'
         ];
     }
 }

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Models\Course;
+use App\Models\Part;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -16,10 +18,10 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $Course = Course::with('media')->get();
+        $Course = Part::with('course' , 'sessions')->get();
         return response()->json([
-            'status' => true,
-            'message' => 'successfully',
+//            'status' => true,
+//            'message' => 'successfully',
             'data' => $Course,
         ]);
     }
@@ -47,7 +49,12 @@ class CourseController extends Controller
             'lecturer_id' => $request->lecturer_id,
             'category_course_id' => $request->category_course_id
         ]);
-        $course->addMediaFromRequest('img')->toMediaCollection();
+        $image=$course->addMediaFromRequest('img')->toMediaCollection();
+
+        $course->update([
+            'img'=>$image->getUrl()
+        ]);
+
 
         return response()->json([
             'message' => 'created successfully',
@@ -122,6 +129,52 @@ class CourseController extends Controller
             'status' => true,
             'message' => 'delete successfully'
         ], 200);
+    }
+
+
+    public function sale()
+    {
+        /*$course=DB::table('courses')
+            ->join('parts','courses.id','=','parts.course_id')
+            ->where('course_type','!=','free')
+            ->orderBy('sales_number','desc')
+            ->get(['title','img','Description','parts.Number_session']);*/
+        $datas = [];
+        $courses = Course::with('parts')->where('course_type','!=','free')->get();
+        foreach ($courses as $course){
+            $image = $course->getMedia()->first()->getUrl();
+            $data = [
+                'data'=>$course,
+                'image'=>$image
+            ];
+            $datas []= $data;
+        }
+        return response()->json([
+            'status' => true,
+            'data'=>$datas
+        ]);
+    }
+    public function free()
+    {
+//        $course=DB::table('courses')
+//            ->join('parts','courses.id','=','parts.course_id')
+//            ->where('course_type','free')
+//            ->get(['title','img','Description','parts.Number_session']);
+
+        $datas = [];
+        $courses= Course::with('parts')->where('course_type','free')->get();
+        foreach ($courses as $course){
+            $image = $course->getMedia()->first()->getUrl();
+            $data = [
+                'data'=>$course,
+                'image'=>$image
+            ];
+            $datas []= $data;
+        }
+        return response()->json([
+            'status' => true,
+            'data'=>$datas
+        ]);
     }
 
 

@@ -20,22 +20,22 @@ class LoginRegisterController extends Controller
 
         $user = User::where('phone_number', $inputs['phone_number'])->first();
 
-        if(!empty($user)){
+        if(empty($user)){
             $newUser['phone_number'] = $inputs['phone_number'];
             $user = User::create($newUser);
-            auth()->login($user);
-        }
-        else{
-            return response()->json([
-                'status' => false ,
-                'message' => 'شماره موبایل صحیحنیست'
-            ]);
+//            auth()->loginRegisterRequest($user);
+//        }
+////        else{
+////            return response()->json([
+////                'status' => false ,
+////                'message' => 'شماره موبایل صحیحنیست'
+////            ]);
 
         }
         $otpCode = rand(111111, 999999);
-        $token = Str::random(60);
+//        $token = Str::random(60);
         $otpInputs = [
-            'token' => $token,
+//            'token' => $token,
             'user_id' => $user->id,
             'otp_code' => $otpCode,
             'login_id' => $user->id,
@@ -44,13 +44,13 @@ class LoginRegisterController extends Controller
         Otp::create($otpInputs);
         $sendsms=new SendSmsController();
         $sendsms->send($request->phone_number,$otpCode);
-        $token = $user->createToken('api_Token')->plainTextToken;
-        auth()->login($user);
+//        $token = $user->createToken('api_Token')->plainTextToken;
+//        auth()->login($user);
 //dd(auth()->login($user));
         return response()->json([
             'status' => 'true',
-            'message' => 'successfully',
-            'token'=>$token
+            'message' => 'otp code send successfully',
+//            'token'=>$token
         ]);
 
     }
@@ -59,15 +59,29 @@ class LoginRegisterController extends Controller
     public function SaveVerificationCode(Request $request)
     {
 
-        $user=User::where('phone_number',$request->phone_number)->first();
-        // dd($user->otp->otp_code)  ********************************otp=relation#=>otp_code
+//        $user=User::where('phone_number',$request->phone_number)->first();
+       // dd($user);
+      // dd($user->otp->otp_code);
+//       ********************************otp=relation#=>otp_code
+
+        $inputs = $request->all();
+
+        $inputs['phone_number'] = ltrim($inputs['phone_number'], '0');
+//        $inputs['phone_number'] = substr($inputs['phone_number'], 0, 2) === '98' ? substr($inputs['id'], 2) : $inputs['id'];
+        $inputs['phone_number'] = str_replace('+98', '', $inputs['phone_number']);
+
+        $user = User::where('phone_number', $inputs['phone_number'])->first();
         if($user->otp->otp_code==$request->otp_code){
             $user->update([
                 'verify_code'=>'yes',
+
             ]);
+                    $token = $user->createToken('api_Token')->plainTextToken;
+
             return Response()->json([
                 'status'=>'true',
-                'message'=>'کاربر با موفقیت تایید شد'
+                'message'=>'login success',
+                'data'=>$token,
             ]);
         }
 

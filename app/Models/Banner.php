@@ -7,19 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Session extends Model implements HasMedia
+class Banner extends Model implements HasMedia
 {
     use InteractsWithMedia;
     use HasFactory;
-    protected $fillable =[
-        'name',
-        'Duration_course',
-        'video',
-        'part_id',
 
-        ];
-    public function course()
-    {
-        return $this->belongsTo(Course ::class);
-    }
+    protected $fillable=[
+        'title',
+        'image',
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\tickets\Ticket;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -15,4 +16,9 @@ class CategoryCourse extends Model implements HasMedia
         'name',
         'image'
     ];
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

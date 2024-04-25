@@ -15,7 +15,7 @@ class Course extends Model implements HasMedia
 
     public function category_course()
     {
-        return $this->hasOne( category_course ::class);
+        return $this->hasOne( CategoryCourse ::class);
     }
     public function lecturer()
     {
@@ -25,4 +25,20 @@ class Course extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class);
     }
+    public function parts()
+    {
+        return $this->hasMany(Part ::class);
+    }
+
+    public function userfavorites()
+    {
+        return $this->belongsToMany(User::class,'favorites',);
+    }
+
+//    public function myCourses()
+//
+//    {
+//        return $this->belongsToMany(User::class,'my_courses',);
+//    }
+
 }
