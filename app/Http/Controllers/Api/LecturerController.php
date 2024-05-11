@@ -18,10 +18,9 @@ class LecturerController extends Controller
         $datas = [];
         $lecturers = Lecturer::all();
         foreach ($lecturers as $lecturer) {
-            $image = $lecturer->getMedia()->first()->getUrl();
+
             $data = [
                 'data'=>$lecturer,
-                'image'=>$image
             ];
             $datas []= $data;
         }
@@ -41,7 +40,10 @@ class LecturerController extends Controller
             'name' => $request->name,
             'cv' => $request->cv,
              ]);
-        $lecturer->addMediaFromRequest('image')->toMediaCollection();
+        $image= $lecturer->addMediaFromRequest('image')->toMediaCollection();
+        $lecturer->update([
+            'img'=>$image->getUrl()
+        ]);
 
         return response()->json([
             'message' => 'lecturer created successfully',

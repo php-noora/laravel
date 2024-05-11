@@ -15,7 +15,7 @@ class Course extends Model implements HasMedia
 
     public function category_course()
     {
-        return $this->hasOne( CategoryCourse ::class);
+        return $this->belongsTo( CategoryCourse ::class);
     }
     public function lecturer()
     {

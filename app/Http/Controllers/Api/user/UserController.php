@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\user;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Models\CategoryCourse;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -14,11 +15,22 @@ class UserController extends Controller
      */
     public function index()
     {
+    $datas=[];
+                $users=User::all();
 
-      $user=User::all();
-      return response()->json([
-         'user'=>$user
-      ]);
+        foreach ($users as $user){
+            $data= [
+                'first_name' => $user->first_name,
+                'phone_number' =>$user->phone_number
+                ];
+            $datas[]=$data;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $datas
+        ]);
+
     }
 
     /**
@@ -27,7 +39,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $user=User::create([
-            'name'=>$request->name,
+            'first_name'=>$request->first_name,
             'last_name'=>$request->last_name,
             'date_of_birth'=>$request->date_of_birth,
             'phone_number'=>$request->phone_number,
@@ -35,7 +47,10 @@ class UserController extends Controller
             'profile_photo_path'=>$request->profile_photo_path,
 
         ]);
-        $user->addMediaFromRequest('profile_photo_path')->toMediaCollection();
+        $image= $user->addMediaFromRequest('profile_photo_path')->toMediaCollection();
+        $user->update([
+            'profile_photo_path'=>$image->getUrl()
+        ]);
 
         return response()->json([
             'message'=>'sucsessfully',
@@ -49,11 +64,10 @@ class UserController extends Controller
      */
     public function show( $id)
     {
-        $user=User::find($id);
-        return response()->jsone([
-            'user'=>$user
-
-        ]);
+//        $user=User::find($id);
+//        return response()->jsone([
+//            'user'=>$user
+//        ]);
     }
 
     /**
@@ -96,5 +110,20 @@ class UserController extends Controller
                 'message' => "{$e->getMessage()}",
             ]);
         }
+    }
+
+
+    public function users_numbers(){
+
+
+        dd(123);
+
+//        $datas = [];
+//        $categorycourse = CategoryCourse::with('courses')->get();
+//        return response()->json([
+//            'status' => true,
+//            'data' => $categorycourse]);
+
+
     }
 }

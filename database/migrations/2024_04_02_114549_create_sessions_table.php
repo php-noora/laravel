@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer( 'Duration_course');
+            $table->string( 'Duration_course');
             $table->text('video')->nullable();
             $table->foreignId('part_id');
 

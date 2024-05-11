@@ -33,12 +33,12 @@ class SessionController extends Controller
     public function store(StoreSessionRequest $request)
     {
 //        dd($request->all());
-        $session= Session::create([
-            'name'=>$request->name,
-            'Duration_course'=>$request->Duration_course,
-            'part_id'=>$request->part_id,
-        ]);
-        $session->addMediaFromRequest('video')->toMediaCollection();
+//        $session= Session::create([
+//            'name'=>$request->name,
+//            'Duration_course'=>$request->Duration_course,
+//            'part_id'=>$request->part_id,
+//        ]);
+//        $session->addMediaFromRequest('video')->toMediaCollection();
         return response()->json([
             'status'=>'sucsess_order',
             'order'=>$session,

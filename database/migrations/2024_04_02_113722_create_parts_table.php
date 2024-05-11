@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('parts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name_part');
             $table->string( 'Number_session');
             $table->foreignId('course_id');
 

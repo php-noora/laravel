@@ -22,7 +22,7 @@ class StorePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name_part' => 'required',
             'Number_session' => 'required',
             'course_id' => 'required',
         ];

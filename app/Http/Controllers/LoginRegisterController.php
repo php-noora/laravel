@@ -19,10 +19,11 @@ class LoginRegisterController extends Controller
         $inputs['phone_number'] = str_replace('+98', '', $inputs['phone_number']);
 
         $user = User::where('phone_number', $inputs['phone_number'])->first();
-
         if(empty($user)){
             $newUser['phone_number'] = $inputs['phone_number'];
             $user = User::create($newUser);
+            dd(123);
+
 //            auth()->loginRegisterRequest($user);
 //        }
 ////        else{

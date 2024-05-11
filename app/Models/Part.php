@@ -9,7 +9,7 @@ class Part extends Model
 {
     use HasFactory;
     Protected $fillable =[
-        'name',
+        'name_part',
         'Number_session',
         'course_id',
 

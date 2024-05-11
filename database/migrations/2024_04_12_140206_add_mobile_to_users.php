@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();$table->string('mobile')->unique()->nullable();
             $table->string('phone_number')->nullable();
-            $table->string('national_code')->unique()->nullable();
             $table->string('slug')->unique()->nullable();
             $table->text('profile_photo_path')->nullable()->comment('avatar');
             $table->tinyInteger('activation')->default(0)->comment('0 => inactive, 1 => active');

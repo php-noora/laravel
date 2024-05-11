@@ -22,7 +22,7 @@ class UpdatePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name_part' => 'required',
             'Number_videos' => 'required',
             'course_id' => 'required',
         ];

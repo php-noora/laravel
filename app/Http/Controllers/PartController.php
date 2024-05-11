@@ -34,16 +34,16 @@ class PartController extends Controller
      */
     public function store(StorePartRequest $request)
     {
-        Part::create([
-
-            'name' => $request->name,
-            'Number_session'=>$request->Number_session,
-            'course_id' => $request->course_id,
-
-        ]);
-        return response()->json([
-            'message' => 'created successfully',
-        ], 201);
+//        Part::create([
+//
+//            'name' => $request->name,
+//            'Number_session'=>$request->Number_session,
+//            'course_id' => $request->course_id,
+//
+//        ]);
+//        return response()->json([
+//            'message' => 'created successfully',
+//        ], 201);
     }
 
     /**

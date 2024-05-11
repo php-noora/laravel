@@ -11,7 +11,7 @@ class StoreHiroSiteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreHiroSiteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'image'=>'required',
+            'Site_slogan'=>'required'
         ];
     }
 }

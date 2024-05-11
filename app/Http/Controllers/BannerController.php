@@ -13,7 +13,23 @@ class BannerController extends Controller
      */
     public function index()
     {
-        //
+
+        $datas=[];
+        $banners=Banner::all();
+        foreach($banners as $banner){
+//            $image =$banner->getMedia()->first()->getUrl();
+            $image =$banner->getMedia()->first()->getUrl();
+
+            $data =[
+                'data'=>$banners,
+                'image'=>$image,
+            ];
+
+        }
+
+        return response([
+            'banner'=>$image,
+        ]);
     }
 
     /**
@@ -21,11 +37,11 @@ class BannerController extends Controller
      */
     public function store(BannerRequest $request)
     {
-        $banner=Banner::create([
-            'title'=>$request->title,
-            'image'=>$request->image,
+        $banner=Banner::create($request->all());
+        $image=$banner->addMediaFromRequest('image')->toMediaCollection();
+        $banner->update([
+            'image'=>$image->getUrl()
         ]);
-        $banner->addMediaFromRequest('image')->toMediaCollection();
 
         return response()->json([
             'status'=>'true',
@@ -40,7 +56,17 @@ class BannerController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $banner1=Banner::find(10);
+        return response([
+            'status'=>'true',
+            'banner'=>$banner1,
+        ]);
+
+//        $banner2=Banner::find(2);
+//        return response([
+//            'status'=>'true',
+//            'banner'=>$banner2,
+//        ]);
     }
 
     /**
@@ -50,17 +76,18 @@ class BannerController extends Controller
     {
 
         $banner=Banner::find($id);
-        $banner->update([
-            'title'=>$request->title,
-        ]);
         if ($request->hasFile('image')) {
             $banner->media()->delete();
-            $banner->addMediaFromRequest('image')->toMediaCollection();
+           $image= $banner->addMediaFromRequest('image')->toMediaCollection();
+            $banner->update([
+                'image'=>$image->getUrl()
+            ]);
+
         }
         return response()->json([
             'status' => true,
-            'message' => ' updated successfully',
-            'data' => Banner::find($id)
+            'message' => 'banner updated successfully',
+            'data' => $banner,
         ], 200);
 
 

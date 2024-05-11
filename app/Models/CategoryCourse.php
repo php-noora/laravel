@@ -17,8 +17,14 @@ class CategoryCourse extends Model implements HasMedia
         'image'
     ];
 
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
     }
+
 }

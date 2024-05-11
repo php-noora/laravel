@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('Description');
             $table->string('img');
             $table->integer( 'price')->unsigned();
-            $table->float(  'time');
+            $table->string(  'time');
 
             $table->foreignId('lecturer_id');
             $table->foreignId('category_course_id');
