@@ -21,6 +21,10 @@ class UpdateCourseRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
+        dd(123);
+
         return [
             'title' => 'required',
             'Description' => 'required',

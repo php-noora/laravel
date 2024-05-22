@@ -35,6 +35,11 @@ class Course extends Model implements HasMedia
         return $this->belongsToMany(User::class,'favorites',);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
 //    public function myCourses()
 //
 //    {

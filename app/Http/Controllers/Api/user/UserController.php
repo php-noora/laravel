@@ -7,6 +7,8 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\CategoryCourse;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -15,9 +17,8 @@ class UserController extends Controller
      */
     public function index()
     {
-    $datas=[];
-                $users=User::all();
-
+        $datas=[];
+        $users=User::all();
         foreach ($users as $user){
             $data= [
                 'first_name' => $user->first_name,
@@ -124,6 +125,27 @@ class UserController extends Controller
 //            'status' => true,
 //            'data' => $categorycourse]);
 
+
+    }
+
+
+    public function filter(Request $request){
+        $name = $request->input('first_name');
+
+
+        $users = QueryBuilder::for(User::class)
+            ->allowedFilters('first_name')
+            ->get();
+
+        return response()->json($users);
+
+//        $users = QueryBuilder::for(User::class)
+//            ->allowedFilters('first_name')
+//            ->get();
+//        return response()->json([
+//            'data'=>$users,
+//
+//        ]);
 
     }
 }

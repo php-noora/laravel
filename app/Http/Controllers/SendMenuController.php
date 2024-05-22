@@ -11,14 +11,20 @@ class SendMenuController extends Controller
 {
     public function CategoryCourseMenu(){
         $datas = [];
-        $CategoryCourses=CategoryCourse::all();
+        $CategoryCourses = Course::with('category_course', 'parts')->get();
+
+//        $CategoryCourses=CategoryCourse::with('courses')->get();
+        dd($CategoryCourses);
         foreach($CategoryCourses as $CategoryCourse){
-            $image=$CategoryCourse->getMedia();
-            $data=[
-                'data'=>$CategoryCourse,
-                'image'=>$image,
-            ];
-            $data[]=$data;
+            $image=$CategoryCourse->courses()->get();
+            dd($image);
+
+//            $image=$CategoryCourse->getMedia();
+//            $data=[
+//                'data'=>$CategoryCourse,
+//                'image'=>$image,
+//            ];
+//            $data[]=$data;
         }
         return response()->json([
             'data' => $data,

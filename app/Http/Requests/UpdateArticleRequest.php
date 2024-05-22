@@ -22,7 +22,10 @@ class UpdateArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title'=>'required',
+            'image'=>'required',
+            'Short_description'=>'required',
+            'description'=>'required',
         ];
     }
 }

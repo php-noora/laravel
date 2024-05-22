@@ -20,27 +20,23 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-
+    public function index(){
+            dd(123);
         $datas = [];
 //        $courses = Part::with('course', 'session')->get();
         $courses = Part::with('course', 'sessions')->get();
+//        dd($courses);
+        foreach ($courses as $course) {
+            $image = $course->getMedia()->first()->getUrl();
+            $data = [
+                'data' => $course,
+                'image' => $image
+            ];
+            $datas [] = $data;
+        }
         return response()->json([
-            'status' => true,
-            'data' => $courses
-
-//        foreach ($courses as $course) {
-//            $image = $course->getMedia()->first()->getUrl();
-//            $data = [
-//                'data' => $course,
-//                'image' => $image
-//            ];
-//            $datas [] = $data;
-//        }
-//        return response()->json([
-//            'status' => true,
-//            'data' => $datas
+          'status' => true,
+            'data' => $datas
         ]);
 
     }
@@ -59,7 +55,7 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
+         dd($request->all());
         $lecture_id = Lecturer::where('id', $request->course['lecturer_id'])->first();
 //        dd($request->course['part_data'][0]['name_part']);
         $category_course_id = CategoryCourse::where('id', $request->course['category_course_id'])->first();
@@ -78,10 +74,11 @@ class CourseController extends Controller
 //        $course->update([
 //            'img' => $image->getUrl()
 //        ]);
-//        dd($course);
+//       dd($course);
 //            dd($request->part_data);
 
             $parts = $request->course['part_data'];
+//            dd($parts);
             foreach ($parts as $part){
                 $save_part=Part::create([
                    'name_part'=>$part['name_part'],
@@ -96,8 +93,22 @@ class CourseController extends Controller
                         'video'=>$session['video'],
                         'part_id'=>$save_part->id
                         ]);
+
                 }
             }
+            return response()->json(['message' => 'Data saved successfully'], 200);
+        } catch (Exception $e) {
+
+
+        }
+    }
+
+//                    $video = $session->addMediaFromRequest('video')->toMediaCollection();
+//       dd($image);
+//        $course->update([
+//            'video' => $video->getUrl()
+//        ]);
+
 
 //            $sessions = $parts->sessions()->createMany([
 //                'name' => $request->name,
@@ -107,13 +118,6 @@ class CourseController extends Controller
 //            $sessions->update([
 //                'video'=>$video->getUrl()
 // ]);
-
-        return response()->json(['message' => 'Data saved successfully'], 200);
-    } catch (Exception $e) {
-
-
-        }
-    }
 
 
 //        $lecture_id= Lecturer::where('id', $request->lecturer_id)->first();
@@ -185,29 +189,49 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCourseRequest $request, $id)
+    public function update( Request $request,Course $course,$id)
     {
-        $Course = Course::where('id', $id)->get()->first();
-        $Course->update([
-            'title' => $request->title,
-            'Description' => $request->Description,
-            'price' => $request->price,
-            'time' => $request->time,
-            'lecturer_id' => $request->lecturer_id,
-            'category_course_id' => $request->category_course_id
+
+//        dd($request->course['title']);
+        $lecture_id = Lecturer::where('id', $request->course['lecturer_id'])->first();
+        $category_course_id = CategoryCourse::where('id', $request->course['category_course_id'])->first();
+
+        $Course = Course::find($id);
+        $update_course=  $Course->update([
+            'title' => $request->course['title'],
+            'Description' => $request->course['Description'],
+            'price' => $request->course['price'],
+            'time' => $request->course['time'],
+            'lecturer_id' => $request->course['lecturer_id'],
+            'category_course_id' => $request->course['category_course_id']
 
         ]);
+
+//        dd($update_course);
         if ($request->hasFile('img')) {
             $Course->media()->delete();
             $Course->addMediaFromRequest('img')->toMediaCollection();
+            $Course->save();
         }
-
+//        $parts = $request->course['part_data'];
+//        foreach ($parts as $part){
+//            $part = Part::find($part['id']);
+////            $update_part->update([
+//            $part->update([
+//                'name_part'=>$part['name_part'],
+//                'Number_session'=>count($part['session_data']),
+//                'course_id'=>$course->id
+//            ]);
+//
+//        }
 
         return response()->json([
             'status' => true,
             'message' => ' updated successfully',
             'data' => CategoryCourse::find($id)
         ], 200);
+
+
 
 
     }
@@ -233,12 +257,13 @@ class CourseController extends Controller
             ->orderBy('sales_number','desc')
             ->get(['title','img','Description','parts.Number_session']);*/
         $datas = [];
-        $courses = Course::with('parts')->where('course_type', '!=', 'free')->get();
+        $courses = Course::with('parts')->where('course_type', '!=', 'free')->orderByDesc('sales_number')
+            ->get();
         foreach ($courses as $course) {
-            $image = $course->getMedia()->first()->getUrl();
+//            $image = $course->getMedia()->first()->getUrl();
             $data = [
                 'data' => $course,
-                'image' => $image
+//                'image' => $image
             ];
             $datas [] = $data;
         }
@@ -298,6 +323,9 @@ class CourseController extends Controller
             ]);
         }
     }
+
+
+
 
 
 }

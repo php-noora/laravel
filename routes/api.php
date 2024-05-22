@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\admin\AdminCommentController;
 use App\Http\Controllers\Api\admin\tickets\TicketAdminController;
 use App\Http\Controllers\Api\CategoryCourseController;
 use App\Http\Controllers\Api\CourseController;
@@ -8,14 +9,14 @@ use App\Http\Controllers\Api\user\UserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\HeroController;
+//use App\Http\Controllers\HeroController;
 use App\Http\Controllers\HiroSiteController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PartController;
 use App\Http\Controllers\SendMenuController;
 use App\Http\Controllers\SessionController;
-use App\Models\Hero;
+//use App\Models\Hero;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,15 +65,44 @@ Route::get('lecturer/{id}', [LecturerController::class, 'show']);
 Route::post('lecturer/update/{id}', [LecturerController::class, 'update']);
 Route::delete('lecturer/delete/{id}', [LecturerController::class, 'destroy']);
 
-
+//Route::prefix('Course')->namespace('Course')->group(function(){}
 Route::get('/Course/panel/index', [CourseController::class, 'panel_index']);
 Route::post('/Course/store', [CourseController::class, 'store']);
 Route::get('Course/{id}', [CourseController::class, 'show']);
 Route::post('Course/update/{id}', [CourseController::class, 'update']);
 Route::delete('Course/delete/{id}', [CourseController::class, 'destroy']);
-
 Route::post('/Course/Favorite', [FavoriteController::class, 'addFavoriteCourse'])->middleware('auth:sanctum');
 Route::get('/Course/Favorite/index', [FavoriteController::class, 'showFavoriteCourse'])->middleware('auth:sanctum');;
+Route::get('/Course/index', [CourseController::class, 'index']);
+
+
+//add part new
+
+Route::post('/Part/store', [PartController::class, 'store']);
+
+
+
+        //comment Course
+        Route::prefix('comment')->group(function(){
+            Route::get('/', [AdminCommentController::class, 'index'])->name('admin.market.comment.index');
+            Route::get('/show', [AdminCommentController::class, 'show'])->name('admin.market.comment.show');
+            Route::post('/store', [AdminCommentController::class, 'store'])->name('admin.market.comment.store');
+            Route::get('/edit/{id}', [AdminCommentController::class, 'edit'])->name('admin.market.comment.edit');
+            Route::put('/update/{id}', [AdminCommentController::class, 'update'])->name('admin.market.comment.update');
+            Route::delete('/destroy/{id}', [AdminCommentController::class, 'destroy'])->name('admin.market.comment.destroy');
+        });
+
+
+//comment
+Route::prefix('comment')->group(function(){
+//    Route::get('/', [AdminCommentController::class, 'index'])->name('admin.content.comment.index');
+    Route::get('/show/{comment}', [AdminCommentController::class, 'show'])->name('admin.content.comment.show');
+    Route::delete('/destroy/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.content.comment.destroy');
+    Route::get('/approved/{comment}', [AdminCommentController::class, 'approved'])->name('admin.content.comment.approved');
+    Route::get('/status/{comment}', [AdminCommentController::class, 'status'])->name('admin.content.comment.status');
+    Route::post('/answer/{comment}', [AdminCommentController::class, 'answer'])->name('admin.content.comment.answer');
+
+});
 
 
 
@@ -92,6 +122,9 @@ Route::get('/Course/Favorite/index', [FavoriteController::class, 'showFavoriteCo
 
 Route::get('users/index', [UserController::class, 'index']);
 Route::post('users/store', [UserController::class, 'store']);
+Route::get('users/index', [UserController::class, 'index']);
+Route::get('/users/filter', [UserController::class, 'filter'])->name('users.filter');
+
 //Route::get('users/{user}', [UserController::class, 'show']);
 //Route::put('users/{user}', [UserController::class, 'update']);
 //Route::delete('users/{user}', [UserController::class, 'destroy']);
@@ -110,11 +143,24 @@ Route::post('/Banner/store', [BannerController::class, 'store'])->name('Banner.c
 Route::post('/Banner/update/{id}', [BannerController::class, 'update'])->name('Banner.update');
 Route::get('/Banner/show/{id}', [BannerController::class, 'show'])->name('Banner.show');
 
+
+//    Route::prefix('article')->namespace('article')->group(function(){}
+
 Route::get('article/index', [ArticleController::class, 'index']);
 Route::post('/article/create', [ArticleController::class, 'store'])->name('article.create');
 Route::post('/article/update/{id}', [ArticleController::class, 'update'])->name('article.update');
 Route::delete('article/destroy/{id}', [ArticleController::class, 'destroy']);
+Route::get('article/indexArticles', [ArticleController::class, 'indexArticles']);
 
+//comment article
+      Route::prefix('comment')->group(function(){
+          Route::get('/', [AdminCommentController::class, 'index'])->name('admin.content.comment.index');
+          Route::get('/show/{comment}', [AdminCommentController::class, 'show'])->name('admin.content.comment.show');
+          Route::delete('/destroy/{comment}', [AdminCommentController::class, 'destroy'])->name('admin.content.comment.destroy');
+          Route::get('/approved/{comment}', [AdminCommentController::class, 'approved'])->name('admin.content.comment.approved');
+          Route::get('/status/{comment}', [AdminCommentController::class, 'status'])->name('admin.content.comment.status');
+
+      });
 
 //admin
 Route::prefix('admin')->group(function(){
@@ -141,6 +187,5 @@ Route::get('article/index', [ArticleController::class, 'index']);
 Route::post('hero/store', [HiroSiteController::class, 'store']);
 Route::get('/hero/show/{hero}', [HiroSiteController::class, 'show']);
 Route::post('hero/update/{hero}', [HiroSiteController::class, 'update']);
-
 
 

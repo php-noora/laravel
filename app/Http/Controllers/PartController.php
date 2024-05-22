@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePartRequest;
 use App\Http\Requests\UpdatePartRequest;
 use App\Models\Part;
+use App\Models\Session;
 
 class PartController extends Controller
 {
@@ -34,18 +35,37 @@ class PartController extends Controller
      */
     public function store(StorePartRequest $request)
     {
-//        Part::create([
-//
-//            'name' => $request->name,
-//            'Number_session'=>$request->Number_session,
-//            'course_id' => $request->course_id,
-//
-//        ]);
-//        return response()->json([
-//            'message' => 'created successfully',
-//        ], 201);
-    }
+        try {
+            $part= Part::create([
 
+            'name' => $request->name,
+                'Number_session'=>count($part['session_data']),
+            'course_id' => $request->course_id,
+
+        ]);
+
+            foreach ($part['session_data'] as $session)
+            {
+                Session::create([
+                    'name'=>$session['name'],
+                    'Duration_course'=>$session['Duration_course'],
+                    'video'=>$session['video'],
+                    'part_id'=>$part->id
+                ]);
+
+
+        }
+        return response()->json([
+            'message' => 'Data saved successfully'
+        ], 200);
+
+    } catch (Exception $e) {
+
+        return response()->json([
+            'message' => 'created successfully',
+        ], 201);
+    }
+}
     /**
      * Display the specified resource.
      */

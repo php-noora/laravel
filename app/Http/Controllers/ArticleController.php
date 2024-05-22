@@ -7,6 +7,8 @@ use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use App\Models\CategoryCourse;
 use App\Models\Course;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -15,29 +17,46 @@ class ArticleController extends Controller
      */
     public function index()
     {
-
         $datas = [];
-        $articles=Article::all();
-        foreach($articles as $article){
-            $image=$article->getMedia()->first()->getUrl();
-            
+        $articles = Article::all();
+        foreach ($articles as $article) {
+            $image = $article->getMedia()->first()->getUrl();
+            $data = [
+                'id' => $article->id,
+                'title' => $article->title,
+                'Short_description' => $article->Short_description,
+                'image' => $image,
 
-            $article->update([
-                'image'=>$image,
-            ]);
-
-            $data=[
-                'data'=>$article,
-                'image'=>$image,
 
             ];
-            $datas [] = $data;
+            $datas[] = $data;
         }
-        return response([
-            'image'=>$image,
-            'article'=>$article,
+        return response()->json([
+            'status' => true,
+            'data' => $datas
         ]);
     }
+
+//        $datas = [];
+//        $articles=Article::all();
+//        foreach($articles as $article){
+//            $image=$article->getMedia()->first()->getUrl();
+//            $article->update([
+//                'image'=>$image,
+//            ]);
+//
+//            $data=[
+//                'data'=>$article,
+//                'image'=>$image,
+//
+//            ];
+//            $datas [] = $data;
+//        }
+//        return response([
+//            'image'=>$image,
+//            'article'=>$article,
+//        ]);
+
 
 
     /**
@@ -53,39 +72,39 @@ class ArticleController extends Controller
      */
     public function store(StoreArticleRequest $request)
     {
-        $article=Article::create([
-            'title'=>$request->title,
-            'Short_description'=>$request->short_description,
-            'description'=>$request->description,
-
+        $article = Article::create([
+            'title' => $request->title,
+            'Short_description' => $request->Short_description,
+            'description' => $request->description,
         ]);
-        $article->addMediaFromRequest('image')->toMediaCollection();
-
+        $image = $article->addMediaFromRequest('image')->toMediaCollection();
+        $article->update([
+            'image' => $image->getUrl()
+        ]);
         return response()->json([
-            'status'=>'success',
-            'data'=>$article,
+            'status' => 'success',
+            'data' => $article,
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Article $article,$id)
+    public function show(Article $article, $id)
     {
         $datas = [];
-        $article=Article::find($id);
-        $image=$article->getMedia()->first()->getUrl();
-        $data=[
-            'data'=>$article,
-            'image'=>$image,
-
+        $article = Article::find($id);
+        $image = $article->getMedia()->first()->getUrl();
+        $data = [
+            'data' => $article,
+            'image' => $image,
         ];
         $datas [] = $data;
 
-       return response([
-       'image'=>$image,
-       'article'=>$article,
-         ]);
+        return response([
+            'image' => $image,
+            'article' => $article,
+        ]);
 
 
 //        return response()->json([
@@ -105,13 +124,13 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateArticleRequest $request, Article $article , $id)
+    public function update(UpdateArticleRequest $request, Article $article, $id)
     {
-        $article=Article::where('id', $id)->get()->first();
+        $article = Article::where('id', $id)->get()->first();
         $article->update([
-            'title'=>$request->title,
-            'Short_description'=>$request->short_description,
-            'description'=>$request->description,
+            'title' => $request->title,
+            'Short_description' => $request->Short_description,
+            'description' => $request->description,
 
         ]);
         if ($request->hasFile('image')) {
@@ -133,7 +152,7 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article , $id)
+    public function destroy(Article $article, $id)
     {
         Article::where('id', $id)->delete();
         return response()->json([
@@ -144,10 +163,28 @@ class ArticleController extends Controller
 
     public function newArticle(Article $article)
     {
-        $article=Article::orderby('created_at', 'desc')->get();
+        $article = Article::orderby('created_at', 'desc')->get();
         return response()->json([
-            'status'=>'success',
-            'data'=> $article
+            'status' => 'success',
+            'data' => $article
         ]);
     }
+    public function indexArticles()
+    {
+        $articles = Article::all();
+        foreach ($articles as $article) {
+
+            $data = [
+                'title' => $article->title,
+                'Short_description' => $article->Short_description,
+                'image' => $article->image,
+
+            ];
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
+    }
+
 }

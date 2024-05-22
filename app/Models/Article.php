@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -20,4 +19,8 @@ class Article extends Model implements HasMedia
         'Visit',
 
     ];
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }
